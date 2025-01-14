@@ -2,8 +2,13 @@
 
 typedef long long int Money;  // Rub
 
+struct Cat{
+    Money eda;
+    int is_alive;
+};
 
-struct Mortgage {
+
+struct Ipoteka {
     double rate;
     Money credit;
     Money platez;
@@ -22,8 +27,9 @@ struct Person{
     Money account;
     Money flat;
     Money expenses;
-    struct Mortgage mortgage;
+    struct Ipoteka ipoteka;
     struct Bank_deposit deposit;
+    struct Cat cat;
 };
 
 
@@ -38,12 +44,15 @@ void alice_salary(const int month, const int year)
         alice.salary *= 1.09;
     }
     alice.account += alice.salary;
+    if (month == 9){
+        alice.account += alice.salary * 0.5;
+    }
 }
 
 
-void alice_mortgage()
+void alice_ipoteka()
 {
-    alice.account -= alice.mortgage.month_pay;
+    alice.account -= alice.ipoteka.month_pay;
 }
 
 
@@ -70,13 +79,34 @@ void alice_init()
     alice.salary = 300000;
     alice.expenses = 50 * 1000;
 
-    alice.mortgage.platez = 1300000;
-    alice.mortgage.credit = 13000 * 1000;
-    alice.mortgage.rate = 0.14;
-    alice.mortgage.month_pay = 138630;
-    alice.account -= alice.mortgage.platez;
+    alice.ipoteka.platez = 1300000;
+    alice.ipoteka.credit = 13000 * 1000;
+    alice.ipoteka.rate = 0.14;
+    alice.ipoteka.month_pay = 138630;
+    alice.account -= alice.ipoteka.platez;
     alice.flat = 13000000;
+    alice.cat.eda = 4000;
+    alice.cat.is_alive = 0;
 }
+
+void alice_cat(const int month, const int year)
+{
+    if ((month == 12) && (year==2026)) {
+        alice.account -= 30000;
+        alice.cat.is_alive = 1;
+    }
+    if ((year == 2043) && (month == 3)) {
+        alice.cat.is_alive = 0;
+        alice.account -= 3000;
+    }
+    if (month == 1){
+        alice.cat.eda *= 1.09;
+    }
+    if (alice.cat.is_alive == 1){
+        alice.account -= alice.cat.eda;
+    }
+}
+
 
 
 void alice_print()
@@ -144,13 +174,13 @@ void simulation()
     int month = 1;
     int year = 2024;
 
-    while( !((month == 1) && (year == 2024 + 30))){
+    while( !((month == 9) && (year == 2024 + 30))){
 
         alice_salary(month, year);
-        alice_mortgage();
+        alice_ipoteka();
         alice_expenses(month);
         alice_flat(month);
-
+        alice_cat(month, year);
         bob_salary(month, year);
         bob_expenses(month,year);
         bob_flat(month,year);
@@ -175,7 +205,3 @@ int main(){
     bob_print();
     return 1;
 }
-
-
-
-
